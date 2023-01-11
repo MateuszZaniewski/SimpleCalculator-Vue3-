@@ -1,30 +1,35 @@
 <template>
   <h1>Basic Calculator</h1>
-  <div class="wrapper">
+  <div class="wrapper colorBG-black">
     <div class="output">
-      <span class="outputString">{{output == '' ? 0 : output}}</span>
+      <span class="outputString colorTXT-white">{{output == '' ? 0 : output}}</span>
     </div>
-    <div class="buttonArea">
-      <div @click="clearing" class="button actionButtons">C</div>
-      <div @click="changeSign" class="button actionButtons">+/-</div>
-      <div @click="parsing" class="button actionButtons manipulateButtons">/</div>
-      <div @click="parsing" class="button actionButtons manipulateButtons">*</div>
-      <div @click="parsing" class="button numericButtons">7</div>
-      <div @click="parsing" class="button numericButtons">8</div>
-      <div @click="parsing" class="button numericButtons">9</div>
-      <div @click="parsing" class="button actionButtons manipulateButtons">-</div>
-      <div @click="parsing" class="button numericButtons">4</div>
-      <div @click="parsing" class="button numericButtons">5</div>
-      <div @click="parsing" class="button numericButtons">6</div>
-      <div @click="parsing" class="button actionButtons manipulateButtons">+</div>
-      <div @click="parsing" class="button numericButtons">1</div>
-      <div @click="parsing" class="button numericButtons">2</div>
-      <div @click="parsing" class="button numericButtons">3</div>
-      <div @click="calculate" class="twoSpace equalButton">=</div>
-      <div @click="parsing" class="button numericButtons">0</div>
-      <div @click="parsing" class="button numericButtons">.</div>
-      <div @click="clearLast" class="button numericButtons del">DEL</div>
+    <div class="buttonArea colorBG-black">
+      <div @click="clearing" class="button actionButtons colorBG-grey colorTXT-black">AC</div>
+      <div @click="changeSign" class="button actionButtons colorBG-orange colorTXT-white">+/-</div>
+      <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">/</div>
+      <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">*</div>
+      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">7</div>
+      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">8</div>
+      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">9</div>
+      <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">-</div>
+      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">4</div>
+      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">5</div>
+      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">6</div>
+      <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">+</div>
+      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">1</div>
+      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">2</div>
+      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">3</div>
+      <div @click="calculate" class="twoSpace equalButton colorBG-orange colorTXT-white">=</div>
+      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">0</div>
+      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">.</div>
+      <div @click="clearLast" class="button numericButtons del colorBG-orange colorTXT-white">DEL</div>
     </div>
+  </div>
+  <div>
+    <ul>
+      <li v-for="calc in history" :key="calc">{{calc}}</li>
+    </ul>
   </div>
 </template>
 
@@ -34,7 +39,11 @@
 
 import { ref } from 'vue'
 
+
+
+
 let output = ref('')
+let history = []
 
 function parsing(Event) {
   let suffixes = [/[/+\-*.]$/];
@@ -46,10 +55,19 @@ function parsing(Event) {
     output.value = ''
   }
 }
-const calculate =  () => output.value.length <= 1 ? output.value = '' : output.value = eval(output.value)
+const calculate =  () => {
+  if(output.value.length <= 1){
+    output.value = '' 
+  }
+  else {
+      output.value = eval(output.value)
+      history.push(eval(output.value))
+  }
+}
 const clearing = () => output.value = ''
 const clearLast = () => output.value = output.value.toString().slice(0, -1)
 const changeSign = () => output.value = -output.value
+
 
 </script>
 
@@ -62,11 +80,30 @@ const changeSign = () => output.value = -output.value
    box-sizing: border-box;
 }
 
+
+.colorBG-grey{
+  background: rgb(159,159,159);
+}
+.colorBG-orange{
+  background: rgb(246,153,6);
+}
+.colorBG-darkgrey{
+  background: rgb(49,49,49);
+}
+.colorBG-black{
+  background: #000000;
+}
+.colorTXT-white{
+  color: #ffffff;
+}
+.colorTXT-black{
+  color:#000000;
+}
+
 .wrapper{
   border: 1px solid black;
   height: 100%;
-  width: 600px;
-  background: rgb(55, 55 ,55);
+  max-width: 500px;
   margin: 0 auto;
   border-radius: 0.8rem;
 }
@@ -74,7 +111,6 @@ const changeSign = () => output.value = -output.value
 .output {
   width:100%;
   height: 60px;
-  background: rgb(242, 243, 233);
   text-align: right;
   padding-top: 10px;
   padding-right: 10px;
@@ -82,7 +118,7 @@ const changeSign = () => output.value = -output.value
 }
 
 .outputString {
-  font-size: 2.2rem;
+  font-size: 2.6rem;
 }
 
 .buttonArea {
@@ -92,6 +128,7 @@ grid-template-rows: repeat(5, 1fr);
 grid-column-gap: 8px;
 grid-row-gap: 8px;
 padding: 1rem 1rem;
+border-radius: 0.8rem;
 }
 
 .button{
@@ -109,15 +146,6 @@ padding: 1rem 1rem;
   opacity: 0.8;
 }
 
-.actionButtons {
-  background: rgb(119, 99, 90);
-  color: white;
-}
-
-.numericButtons {
-  background: rgb(25,25,25);
-  color: white;
-}
 
 .twoSpace {
   grid-area: 4 / 4 / 6 / 5;
@@ -126,8 +154,6 @@ padding: 1rem 1rem;
   display: flex;
   align-items:center;
   justify-content: center;
-  background: rgb(233, 105, 18);
-  color: white;
   border-radius: 1rem;
 }
 
@@ -140,7 +166,6 @@ padding: 1rem 1rem;
     border: 1px solid black;
     height: 100%;
     width: 300px;
-    background: rgb(55, 55 ,55);
     margin: 0 auto;
     border-radius: 0.8rem;
   }
@@ -152,6 +177,7 @@ padding: 1rem 1rem;
   grid-column-gap: 8px;
   grid-row-gap: 8px;
   padding: 1rem 1rem;
+  border-radius: 0.8rem;
   }
   
   .button{
@@ -168,6 +194,7 @@ padding: 1rem 1rem;
   .del{
     font-size: 1.7rem;
   }
+
 }
 
 </style>
