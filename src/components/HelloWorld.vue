@@ -41,6 +41,10 @@ function parsing(Event) {
   let regex = /[/+\-*.]$/
   let endsWithSuffix = suffixes.some(suffix => suffix.test(output.value.toString()));
   endsWithSuffix && Event.srcElement.innerText.match(regex) ? output.value = output.value.toString().slice(0, -1) + Event.srcElement.innerText : output.value += Event.srcElement.innerText
+
+  if(output.value[0] == '0' || (output.value[0].match(regex))){
+    output.value = ''
+  }
 }
 const calculate =  () => output.value.length <= 1 ? output.value = '' : output.value = eval(output.value)
 const clearing = () => output.value = ''
