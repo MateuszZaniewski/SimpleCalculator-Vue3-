@@ -30,7 +30,9 @@
     <div class="history">
       <h3 v-if="history.length > 0" >Previous calculations: </h3>
       <ul class="history-list">
-        <li class="history-list__item" v-for="calc in history" :key="calc">{{calc[0]}} = {{calc[1]}}</li>
+        <li class="history-list__item" v-for="calc in history" :key="calc">{{calc[0]}} = {{calc[1]}}
+          <img @click="copyFunction" class="copied" v-bind:src="copiedSrc" alt="Logo">
+        </li>
       </ul>
     </div>
   </div>
@@ -42,8 +44,6 @@
 <script setup>
 
 import { ref } from 'vue'
-
-
 
 
 let output = ref('')
@@ -75,6 +75,21 @@ const clearing = () => output.value = ''
 const clearLast = () => output.value = output.value.toString().slice(0, -1)
 const changeSign = () => output.value = -output.value
 
+async function copyFunction(Event) {
+    console.log(Event.composedPath())
+    const index = Event.composedPath()[1].innerText.indexOf("=")
+    const extractResult = Event.composedPath()[1].innerText.slice(index+2).trim()
+    let copied = true
+      try {
+        await navigator.clipboard.writeText('') // clears clipboard
+        await navigator.clipboard.writeText(extractResult.trim());
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+      }
+      copied
+    }
+
+const copiedSrc = require('../assets/copied.png')
 
 </script>
 
@@ -155,6 +170,7 @@ border-radius: 0.8rem;
   align-items:center;
   justify-content: center;
   border-radius: 1rem;
+  cursor: pointer;
 }
 
 .button:hover, .button:active {
@@ -170,6 +186,7 @@ border-radius: 0.8rem;
   align-items:center;
   justify-content: center;
   border-radius: 1rem;
+  cursor: pointer;
 }
 
 .twoSpace:hover {
@@ -190,7 +207,22 @@ border-radius: 0.8rem;
   font-size: 1.4rem;
   padding-bottom: 0.3rem;
   text-align: left;
+  
 }
+
+.history-list__item span{
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 0 auto;
+  padding-left: 2px;
+}
+
+.copied{
+  height: 20px;
+  width: 20px;
+  padding-left: 5px;
+}
+
 
 
 
