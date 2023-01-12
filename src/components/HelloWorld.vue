@@ -1,36 +1,40 @@
 <template>
   <h1>Basic Calculator</h1>
-  <div class="wrapper colorBG-black">
-    <div class="output">
-      <span class="outputString colorTXT-white">{{output == '' ? 0 : output}}</span>
+  <div class="over800px">
+    <div class="wrapper colorBG-black">
+      <div class="output">
+        <span class="outputString colorTXT-white">{{output == '' ? 0 : output}}</span>
+      </div>
+      <div class="buttonArea colorBG-black">
+        <div @click="clearing" class="button actionButtons colorBG-grey colorTXT-black">AC</div>
+        <div @click="changeSign" class="button actionButtons colorBG-orange colorTXT-white">+/-</div>
+        <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">/</div>
+        <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">*</div>
+        <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">7</div>
+        <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">8</div>
+        <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">9</div>
+        <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">-</div>
+        <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">4</div>
+        <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">5</div>
+        <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">6</div>
+        <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">+</div>
+        <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">1</div>
+        <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">2</div>
+        <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">3</div>
+        <div @click="calculate" class="twoSpace equalButton colorBG-orange colorTXT-white">=</div>
+        <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">0</div>
+        <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">.</div>
+        <div @click="clearLast" class="button numericButtons del colorBG-orange colorTXT-white">DEL</div>
+      </div>
     </div>
-    <div class="buttonArea colorBG-black">
-      <div @click="clearing" class="button actionButtons colorBG-grey colorTXT-black">AC</div>
-      <div @click="changeSign" class="button actionButtons colorBG-orange colorTXT-white">+/-</div>
-      <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">/</div>
-      <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">*</div>
-      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">7</div>
-      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">8</div>
-      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">9</div>
-      <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">-</div>
-      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">4</div>
-      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">5</div>
-      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">6</div>
-      <div @click="parsing" class="button actionButtons colorBG-orange colorTXT-white">+</div>
-      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">1</div>
-      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">2</div>
-      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">3</div>
-      <div @click="calculate" class="twoSpace equalButton colorBG-orange colorTXT-white">=</div>
-      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">0</div>
-      <div @click="parsing" class="button numericButtons colorBG-darkgrey colorTXT-white">.</div>
-      <div @click="clearLast" class="button numericButtons del colorBG-orange colorTXT-white">DEL</div>
+    <div class="history">
+      <h3 v-if="history.length > 0" >Previous calculations: </h3>
+      <ul class="history-list">
+        <li class="history-list__item" v-for="calc in history" :key="calc">{{calc[0]}} = {{calc[1]}}</li>
+      </ul>
     </div>
   </div>
-  <div>
-    <ul>
-      <li v-for="calc in history" :key="calc">{{calc}}</li>
-    </ul>
-  </div>
+  
 </template>
 
 
@@ -56,14 +60,17 @@ function parsing(Event) {
   }
 }
 const calculate =  () => {
-  if(output.value.length <= 1){
-    output.value = '' 
-  }
-  else {
+    if(eval(output.value).length <= 10){
+      history.push([output.value, eval(output.value)])
       output.value = eval(output.value)
-      history.push(eval(output.value))
-  }
+    } else {
+      history.push([output.value, eval(output.value)])
+      output.value = eval(output.value).toString().slice(0,10)
+    }
 }
+
+
+
 const clearing = () => output.value = ''
 const clearLast = () => output.value = output.value.toString().slice(0, -1)
 const changeSign = () => output.value = -output.value
@@ -100,10 +107,18 @@ const changeSign = () => output.value = -output.value
   color:#000000;
 }
 
+.over800px{
+  display: flex;
+  max-width: 1000px;
+  margin: 0 auto;
+  gap: 10px;
+}
+
 .wrapper{
   border: 1px solid black;
   height: 100%;
   max-width: 500px;
+  width: 60%;
   margin: 0 auto;
   border-radius: 0.8rem;
 }
@@ -142,8 +157,8 @@ border-radius: 0.8rem;
   border-radius: 1rem;
 }
 
-.button:hover, .button:active, .button:click {
-  opacity: 0.8;
+.button:hover, .button:active {
+  opacity: 0.7;
 }
 
 
@@ -161,13 +176,49 @@ border-radius: 0.8rem;
   opacity: 0.8;
 }
 
+.history {
+  width: 40%;
+  text-align: left;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+}
+
+.history-list__item{
+  font-size: 1.4rem;
+  padding-bottom: 0.3rem;
+  text-align: left;
+}
+
+
+
 @media (min-width: 350px) and (max-width: 800px){
+
+  .over800px{
+    display: flex;
+    flex-flow: column;
+  }
+
   .wrapper{
     border: 1px solid black;
     height: 100%;
     width: 300px;
     margin: 0 auto;
     border-radius: 0.8rem;
+  }
+
+  .history {
+    text-align: center;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .history-list__item{
+    text-align: center;
   }
 
   .buttonArea {
